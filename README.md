@@ -1,57 +1,57 @@
 # 🚀 Elixir-React-server
 
-Fullstack приложение с **Elixir + Phoenix** бэкендом и **React** фронтендом.
+Fullstack application with **Elixir + Phoenix** backend and **React** frontend.
 
-> Мощный сервер на Elixir + современный React интерфейс для быстрой разработки веб-приложений
+> Powerful Elixir server + modern React interface for rapid web application development
 
 ---
 
-## 📊 Стек технологий
+## 📊 Technology Stack
 
-| Компонент | Технологии | Процент |
+| Component | Technologies | Percent |
 |-----------|-----------|---------|
 | **Backend** | ![Elixir](https://img.shields.io/badge/Elixir-4B275F?style=flat) ![Phoenix](https://img.shields.io/badge/Phoenix-FD4F00?style=flat) | 73.7% |
 | **Frontend** | ![React](https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black) | 13.4% |
-| **Стили** | ![CSS](https://img.shields.io/badge/CSS-1572B6?style=flat&logo=css3) ![HTML](https://img.shields.io/badge/HTML-E34C26?style=flat&logo=html5) | 10.2% + 2.7% |
+| **Styles** | ![CSS](https://img.shields.io/badge/CSS-1572B6?style=flat&logo=css3) ![HTML](https://img.shields.io/badge/HTML-E34C26?style=flat&logo=html5) | 10.2% + 2.7% |
 
 ---
 
-## 🚀 Быстрый старт
+## 🚀 Quick Start
 
-### Требования
+### Requirements
 - **Elixir** 1.14+
 - **Node.js** 16+
-- **PostgreSQL** (опционально)
+- **PostgreSQL** (optional)
 
-### Установка и запуск
+### Installation and Run
 
-#### 1️⃣ Бэкенд (Elixir + Phoenix)
+#### 1️⃣ Backend (Elixir + Phoenix)
 
 ```bash
 cd backend
-mix setup          # Установка зависимостей
-mix phx.server     # Запуск сервера на localhost:4000
+mix setup          # Install dependencies
+mix phx.server     # Run server on localhost:4000
 ```
 
-#### 2️⃣ Фронтенд (React)
+#### 2️⃣ Frontend (React)
 
 ```bash
 cd frontend
-npm install        # Установка зависимостей
-npm start          # Запуск на localhost:3000
+npm install        # Install dependencies
+npm start          # Run on localhost:3000
 ```
 
 ---
 
-## 📁 Структура проекта
+## 📁 Project Structure
 
 ```
 Elixir-React-server/
-├── backend/                    # Phoenix сервер
+├── backend/                    # Phoenix server
 │   ├── lib/
-│   ├── mix.exs               # Зависимости Elixir
+│   ├── mix.exs               # Elixir dependencies
 │   └── config/
-├── frontend/                   # React приложение
+├── frontend/                   # React application
 │   ├── src/
 │   ├── public/
 │   └── package.json
@@ -60,36 +60,36 @@ Elixir-React-server/
 
 ---
 
-## 🛠️ Основные команды
+## 🛠️ Main Commands
 
 ### Backend (Elixir/Phoenix)
 
-| Команда | Описание |
+| Command | Description |
 |---------|---------|
-| `mix phx.server` | Запуск dev сервера |
-| `mix test` | Запуск тестов |
-| `mix phx.new` | Создание нового Phoenix проекта |
-| `mix ecto.migrate` | Выполнить миграции БД |
+| `mix phx.server` | Run dev server |
+| `mix test` | Run tests |
+| `mix phx.new` | Create new Phoenix project |
+| `mix ecto.migrate` | Execute database migrations |
 
 ### Frontend (React)
 
-| Команда | Описание |
+| Command | Description |
 |---------|---------|
-| `npm start` | Запуск dev сервера (localhost:3000) |
-| `npm test` | Запуск тестов |
-| `npm run build` | Продакшн сборка |
-| `npm run eject` | Выход из Create React App (⚠️ необратимо) |
+| `npm start` | Run dev server (localhost:3000) |
+| `npm test` | Run tests |
+| `npm run build` | Production build |
+| `npm run eject` | Eject from Create React App (⚠️ irreversible) |
 
 ---
 
-## 🔗 Доступные сервисы
+## 🔗 Available Services
 
-- **API Сервер**: [http://localhost:4000](http://localhost:4000)
+- **API Server**: [http://localhost:4000](http://localhost:4000)
 - **React App**: [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 📚 Полезные ссылки
+## 📚 Useful Links
 
 ### Elixir & Phoenix
 - 🌐 [Phoenix Framework](https://www.phoenixframework.org/)
@@ -108,56 +108,56 @@ Elixir-React-server/
 
 ### Phoenix (Heroku, Fly.io, Render)
 ```bash
-# Подробнее в документации Phoenix
+# See Phoenix documentation for more details
 https://hexdocs.pm/phoenix/deployment.html
 ```
 
 ### React (Vercel, Netlify, AWS S3)
 ```bash
-npm run build      # Создать оптимизированную сборку
-# Распубликовать содержимое папки build
+npm run build      # Create optimized build
+# Publish the contents of the build folder
 ```
 
 ---
 
-## 🤝 Как внести вклад
+## 🤝 How to Contribute
 
-1. **Fork** репозиторий
-2. Создайте **feature branch** (`git checkout -b feature/amazing-feature`)
-3. Сделайте **commit** (`git commit -m 'Add amazing feature'`)
-4. **Push** на branch (`git push origin feature/amazing-feature`)
-5. Откройте **Pull Request**
-
----
-
-## 📝 Лицензия
-
-Этот проект лицензирован под MIT License - смотри файл [LICENSE](LICENSE) для деталей.
+1. **Fork** the repository
+2. Create a **feature branch** (`git checkout -b feature/amazing-feature`)
+3. Make a **commit** (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. Open a **Pull Request**
 
 ---
 
-## 💡 Советы и рекомендации
+## 📝 License
 
-- ✅ Используйте **live reload** для быстрой разработки
-- ✅ Пишите **тесты** для обеих частей приложения
-- ✅ Следуйте **best practices** Elixir и React
-- ✅ Используйте **environment переменные** для конфигурации
-- ✅ Регулярно обновляйте зависимости
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 💡 Tips and Recommendations
+
+- ✅ Use **live reload** for faster development
+- ✅ Write **tests** for both parts of the application
+- ✅ Follow **best practices** for Elixir and React
+- ✅ Use **environment variables** for configuration
+- ✅ Regularly update dependencies
 
 ---
 
 ## ❓ FAQ
 
-**Q: Как подключить БД?**
-A: Отредактируйте `backend/config/dev.exs` и используйте `mix ecto.migrate`
+**Q: How do I connect a database?**
+A: Edit `backend/config/dev.exs` and use `mix ecto.migrate`
 
-**Q: Как настроить CORS?**
-A: В Phoenix используйте plug Corsica в файле endpoint.ex
+**Q: How do I set up CORS?**
+A: In Phoenix, use the Corsica plug in your endpoint.ex file
 
-**Q: Как деплоить оба приложения?**
-A: Рекомендуется использовать Docker для контейнеризации обоих сервисов
+**Q: How do I deploy both applications?**
+A: It's recommended to use Docker for containerizing both services
 
 ---
 
-**Автор**: [@mrbezarate](https://github.com/mrbezarate)  
-**Последнее обновление**: 2026-05-18
+**Author**: [@mrbezarate](https://github.com/mrbezarate)  
+**Last Updated**: 2026-05-18
