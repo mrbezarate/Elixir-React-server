@@ -1,70 +1,195 @@
-# Getting Started with Create React App
+# 🎨 Frontend - React UI
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Современный фронтенд на React для полнофункционального веб-приложения с Elixir/Phoenix бэкендом.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🎯 О проекте
 
-### `npm start`
+Этот модуль содержит пользовательский интерфейс, который взаимодействует с Phoenix API сервером (бэкендом на порту 4000). Фронтенд автоматически обновляется при изменении кода и легко масштабируется.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🚀 Быстрый старт
 
-### `npm test`
+### Требования
+- **Node.js** 16 или выше
+- **npm** или **yarn**
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Установка и запуск
 
-### `npm run build`
+```bash
+# Установить зависимости
+npm install
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# Запустить dev сервер (localhost:3000)
+npm start
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# Открыть в браузере
+# http://localhost:3000
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 📝 Доступные команды
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+| Команда | Описание |
+|---------|---------|
+| `npm start` | Запуск dev сервера с live reload |
+| `npm test` | Запуск тестов в watch режиме |
+| `npm run build` | Создание оптимизированной production сборки |
+| `npm run eject` | Выход из Create React App *(необратимо)* |
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 📁 Структура проекта
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
+frontend/
+├── src/
+│   ├── components/          # Переиспользуемые React компоненты
+│   ├── pages/               # Страницы приложения
+│   ├── services/            # API клиент и бизнес-логика
+│   ├── styles/              # CSS файлы
+│   ├── App.js               # Главный компонент
+│   ├── index.js             # Точка входа
+│   └── ...
+├── public/                  # Статичные файлы
+├── package.json             # Зависимости проекта
+└── README.md
+```
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🔌 Подключение к API
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+По умолчанию фронтенд подключается к локальному бэкенду на `http://localhost:4000`.
 
-### Code Splitting
+### Пример API запроса:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```javascript
+// src/services/api.js
+const API_URL = 'http://localhost:4000/api';
 
-### Analyzing the Bundle Size
+export const fetchData = async () => {
+  try {
+    const response = await fetch(`${API_URL}/data`);
+    return await response.json();
+  } catch (error) {
+    console.error('API Error:', error);
+  }
+};
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Настройка CORS
 
-### Making a Progressive Web App
+Убедитесь, что на бэкенде настроен CORS для `http://localhost:3000`:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```elixir
+# backend/lib/your_app_web/endpoint.ex
+plug CORSPlug, origins: ["localhost:3000"]
+```
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 🧪 Тестирование
 
-### Deployment
+```bash
+# Запустить все тесты
+npm test
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+# Запустить с покрытием
+npm test -- --coverage
 
-### `npm run build` fails to minify
+# Запустить конкретный файл
+npm test -- ComponentName.test.js
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## 🏗️ Production сборка
+
+```bash
+# Создать оптимизированную сборку
+npm run build
+
+# Папка `build` готова к развертыванию
+```
+
+### Развертывание на:
+- **Vercel** - автоматический деплой из GitHub
+- **Netlify** - свяжите репо и выберите `npm run build`
+- **AWS S3 + CloudFront** - загрузите папку `build`
+
+---
+
+## 🛠️ Полезные инструменты
+
+- **React DevTools** - расширение для браузера для отладки React
+- **Redux DevTools** - если используете Redux
+- **VS Code Extensions** - ES7+ React/Redux/React-Native snippets
+
+---
+
+## 🔄 Переменные окружения
+
+Создайте файл `.env` в корне `frontend/`:
+
+```env
+REACT_APP_API_URL=http://localhost:4000/api
+REACT_APP_ENV=development
+```
+
+Используйте в коде:
+```javascript
+const API_URL = process.env.REACT_APP_API_URL;
+```
+
+**Важно:** Переменные должны начинаться с `REACT_APP_` чтобы быть доступными в браузере.
+
+---
+
+## 🐛 Решение проблем
+
+### `npm start` не работает
+```bash
+# Очистить кэш
+rm -rf node_modules package-lock.json
+npm install
+npm start
+```
+
+### CORS ошибки
+✅ Проверьте что бэкенд запущен на `http://localhost:4000`  
+✅ Убедитесь что CORS настроен в Phoenix endpoint
+
+### Порт 3000 занят
+```bash
+# Использовать другой порт
+PORT=3001 npm start
+```
+
+---
+
+## 📚 Документация
+
+- [React Docs](https://react.dev)
+- [Create React App Docs](https://create-react-app.dev)
+- [NPM Scripts](https://create-react-app.dev/docs/available-scripts/)
+- [Environment Variables](https://create-react-app.dev/docs/adding-custom-environment-variables/)
+
+---
+
+## 🤝 Разработка
+
+При работе на проекте:
+
+1. ✅ Пишите компоненты функциональные с hooks
+2. ✅ Используйте PropTypes или TypeScript для типизации
+3. ✅ Разбивайте компоненты по смыслу (one component = one file)
+4. ✅ Создавайте custom hooks для переиспользуемой логики
+5. ✅ Используйте миддлвэр для API запросов (не в компонентах)
+
+---
+
+**📖 Назад в главный проект:** [Elixir-React-server README](../README.md)
