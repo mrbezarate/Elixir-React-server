@@ -12,8 +12,10 @@ defmodule Backend.Application do
       Backend.Repo,
       {DNSCluster, query: Application.get_env(:backend, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Backend.PubSub},
-      # Start a worker by calling: Backend.Worker.start_link(arg)
-      # {Backend.Worker, arg},
+      {Registry, keys: :unique, name: Backend.WorkerRegistry},
+      Backend.Simulation.MetricsAggregator,
+      Backend.Simulation.WorkerSupervisor,
+      Backend.Simulation.LoadGenerator,
       # Start to serve requests, typically the last entry
       BackendWeb.Endpoint
     ]
