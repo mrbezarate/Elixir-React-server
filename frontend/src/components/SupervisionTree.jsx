@@ -92,7 +92,6 @@ const SupervisionTree = ({ metrics, activeEvent }) => {
   
   useEffect(() => {
     if (activeEvent === 'UPGRADE') {
-      // Create a wave of upgrades
       let wave = [];
       const interval = setInterval(() => {
         if (wave.length >= TOTAL_VISUAL_NODES) {
@@ -102,8 +101,8 @@ const SupervisionTree = ({ metrics, activeEvent }) => {
           setUpgradedNodes([...wave]);
         }
       }, 50);
-      return () => { clearInterval(interval); setUpgradedNodes([]); }
-    } else {
+      return () => { clearInterval(interval); }
+    } else if (activeEvent === 'PURGE') {
       setUpgradedNodes([]);
     }
   }, [activeEvent]);

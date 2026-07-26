@@ -5,6 +5,8 @@ defmodule BackendWeb.SimulationChannel do
   @impl true
   def join("simulation:lobby", _payload, socket) do
     if authorized?(socket) do
+      # Subscribe to the simulation updates from MetricsAggregator
+      Phoenix.PubSub.subscribe(Backend.PubSub, "simulation")
       {:ok, socket}
     else
       {:error, %{reason: "unauthorized"}}
@@ -12,6 +14,12 @@ defmodule BackendWeb.SimulationChannel do
   end
 
   defp authorized?(_socket), do: true
+
+  @impl true
+  def handle_info({:metrics_update, payload}, socket) do
+    push(socket, "metrics_update", payload)
+    {:noreply, socket}
+  end
 
   @impl true
   def handle_in("spawn_workers", %{"count" => count}, socket) do

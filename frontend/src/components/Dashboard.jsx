@@ -10,14 +10,18 @@ const Dashboard = () => {
   const [activeEvent, setActiveEvent] = useState(null);
   const [isAutoScaler, setIsAutoScaler] = useState(false);
 
-  // Auto Scaler AI Simulation
+  const [lastScaleTime, setLastScaleTime] = useState(0);
+
+  // Auto Scaler AI Simulation with Cooldown
   useEffect(() => {
-    if (isAutoScaler && metrics.rps > 200 && metrics.stats.idle < 1000) {
+    const now = Date.now();
+    if (isAutoScaler && metrics.rps > 200 && metrics.stats.idle < 1000 && (now - lastScaleTime > 5000)) {
       spawnWorkers(2000);
       setActiveEvent('AUTO_SCALE_UP');
+      setLastScaleTime(now);
       setTimeout(() => setActiveEvent(null), 3000);
     }
-  }, [isAutoScaler, metrics.rps, metrics.stats.idle, spawnWorkers]);
+  }, [isAutoScaler, metrics.rps, metrics.stats.idle, spawnWorkers, lastScaleTime]);
 
   const handleSimulateSpike = () => {
     setActiveEvent('DDOS');

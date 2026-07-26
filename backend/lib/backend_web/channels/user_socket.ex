@@ -2,7 +2,7 @@ defmodule BackendWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "simulation", BackendWeb.SimulationChannel
+  channel "simulation:*", BackendWeb.SimulationChannel
 
   @impl true
   def connect(_params, socket, _connect_info) do
