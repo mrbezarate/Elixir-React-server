@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSimulationSocket } from '../hooks/useSimulationSocket';
 import TelemetryChart from './TelemetryChart';
 import DiagnosticConsole from './DiagnosticConsole';
@@ -7,6 +7,19 @@ import SystemControls from './SystemControls';
 
 const Dashboard = () => {
   const { metrics, rpsHistory, logs, spawnWorkers, simulateSpike, killRandom } = useSimulationSocket();
+  const [activeEvent, setActiveEvent] = useState(null);
+
+  const handleSimulateSpike = () => {
+    setActiveEvent('DDOS');
+    simulateSpike();
+    setTimeout(() => setActiveEvent(null), 5000);
+  };
+
+  const handleKillRandom = (count) => {
+    setActiveEvent('KILL');
+    killRandom(count);
+    setTimeout(() => setActiveEvent(null), 5000);
+  };
 
   return (
     <div className="v4-hud">
@@ -33,15 +46,15 @@ const Dashboard = () => {
         </div>
         
         <div className="hud-col center-col">
-          <SupervisionTree metrics={metrics} />
+          <SupervisionTree metrics={metrics} activeEvent={activeEvent} />
         </div>
         
         <div className="hud-col right-col">
           <SystemControls 
             metrics={metrics}
             spawnWorkers={spawnWorkers}
-            simulateSpike={simulateSpike}
-            killRandom={killRandom}
+            simulateSpike={handleSimulateSpike}
+            killRandom={() => handleKillRandom(1000)}
           />
         </div>
       </div>
