@@ -6,8 +6,18 @@ import SupervisionTree from './SupervisionTree';
 import SystemControls from './SystemControls';
 
 const Dashboard = () => {
-  const { metrics, rpsHistory, logs, spawnWorkers, simulateSpike, killRandom } = useSimulationSocket();
+  const { metrics, rpsHistory, logs, spawnWorkers, simulateSpike, killRandom, purgeCluster } = useSimulationSocket();
   const [activeEvent, setActiveEvent] = useState(null);
+  const [isAutoScaler, setIsAutoScaler] = useState(false);
+
+  // Auto Scaler AI Simulation
+  useEffect(() => {
+    if (isAutoScaler && metrics.rps > 200 && metrics.stats.idle < 1000) {
+      spawnWorkers(2000);
+      setActiveEvent('AUTO_SCALE_UP');
+      setTimeout(() => setActiveEvent(null), 3000);
+    }
+  }, [isAutoScaler, metrics.rps, metrics.stats.idle, spawnWorkers]);
 
   const handleSimulateSpike = () => {
     setActiveEvent('DDOS');
@@ -20,9 +30,26 @@ const Dashboard = () => {
     killRandom(count);
     setTimeout(() => setActiveEvent(null), 5000);
   };
+  
+  const handlePurge = () => {
+    setActiveEvent('PURGE');
+    purgeCluster();
+    setTimeout(() => setActiveEvent(null), 4000);
+  };
+  
+  const handleHotUpgrade = () => {
+    setActiveEvent('UPGRADE');
+    // Does not send anything to backend, it's just visual for the portfolio
+    setTimeout(() => setActiveEvent(null), 8000);
+  };
+  
+  const handleNetSplit = () => {
+    setActiveEvent('SPLIT');
+    setTimeout(() => setActiveEvent(null), 8000);
+  };
 
   return (
-    <div className="v4-hud">
+    <div className={`v4-hud ${activeEvent === 'PURGE' ? 'purge-shake' : ''}`}>
       <div className="hud-grid-bg"></div>
       
       {/* Decals */}
@@ -32,11 +59,14 @@ const Dashboard = () => {
         <div>AUTH: GRANTED</div>
       </div>
       <div className="decal bottom-left">SYS_MEMORY: OK<br/>NET_UPLINK: ACTIVE</div>
-      <div className="decal bottom-right">v2.0.44</div>
+      <div className="decal bottom-right">v2.0.45-PRO</div>
 
       <header className="hud-header">
         <div className="hud-title">ELIXIR::FAULT_TOLERANCE_ENGINE</div>
-        <div className="hud-status">SYS.ONLINE <span className="blink-block">_</span></div>
+        <div className="hud-status">
+          {activeEvent === 'PURGE' ? <span style={{color: 'red'}}>SYS.OFFLINE</span> : 'SYS.ONLINE'} 
+          <span className="blink-block">_</span>
+        </div>
       </header>
 
       <div className="hud-layout">
@@ -55,14 +85,22 @@ const Dashboard = () => {
             spawnWorkers={spawnWorkers}
             simulateSpike={handleSimulateSpike}
             killRandom={() => handleKillRandom(1000)}
+            purgeCluster={handlePurge}
+            hotUpgrade={handleHotUpgrade}
+            netSplit={handleNetSplit}
+            isAutoScaler={isAutoScaler}
+            toggleAutoScaler={() => setIsAutoScaler(!isAutoScaler)}
           />
         </div>
       </div>
       
       <div className="hud-footer">
-        <div className="footer-left">NODE: ERT-4000</div>
+        <div className="footer-left">NODE: ERT-4000 [US-EAST-1]</div>
         <div className="footer-right">PROTOCOL: WEBSOCKET v2.0.0</div>
       </div>
+      
+      {/* Global VFX Layer for Purge */}
+      {activeEvent === 'PURGE' && <div className="global-purge-laser"></div>}
     </div>
   );
 };

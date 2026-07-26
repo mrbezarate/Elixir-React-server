@@ -26,6 +26,30 @@ const HoloTooltip = ({ eventType }) => {
             <div className="holo-desc">1000 processes terminated. <b>Failure is isolated.</b> Neighboring memory is untouched. Supervisor is respawning processes instantly.</div>
           </>
         )}
+        {eventType === 'PURGE' && (
+          <>
+            <div className="holo-title alert">SYSTEM PURGE</div>
+            <div className="holo-desc">All nodes terminated. <b>Grid wiped clean.</b></div>
+          </>
+        )}
+        {eventType === 'UPGRADE' && (
+          <>
+            <div className="holo-title upgrade-text">HOT CODE SWAPPING</div>
+            <div className="holo-desc">Injecting v2.0 bytecode into Erlang VM. Processes updating state on the fly. <b>Zero Downtime.</b> Notice RPS remains stable.</div>
+          </>
+        )}
+        {eventType === 'SPLIT' && (
+          <>
+            <div className="holo-title warn">NETWORK PARTITION</div>
+            <div className="holo-desc">Datacenter link severed. <b>Split-Brain scenario.</b> Nodes entering degraded state but continuing to process local queues.</div>
+          </>
+        )}
+        {eventType === 'AUTO_SCALE_UP' && (
+          <>
+            <div className="holo-title upgrade-text">AI AUTO-SCALER</div>
+            <div className="holo-desc">High load detected. Automatically bootstrapping 2000 new nodes to balance traffic.</div>
+          </>
+        )}
       </div>
     </motion.div>
   );
@@ -63,13 +87,36 @@ const SupervisionTree = ({ metrics, activeEvent }) => {
     return arr;
   }, [stats.total, stats.idle, stats.processing, stats.error, activeVisualCount, safeFailed]);
 
+  // Determine state for Upgrade and Split VFX
+  const [upgradedNodes, setUpgradedNodes] = useState([]);
+  
+  useEffect(() => {
+    if (activeEvent === 'UPGRADE') {
+      // Create a wave of upgrades
+      let wave = [];
+      const interval = setInterval(() => {
+        if (wave.length >= TOTAL_VISUAL_NODES) {
+          clearInterval(interval);
+        } else {
+          for(let i=0; i<10; i++) wave.push(wave.length);
+          setUpgradedNodes([...wave]);
+        }
+      }, 50);
+      return () => { clearInterval(interval); setUpgradedNodes([]); }
+    } else {
+      setUpgradedNodes([]);
+    }
+  }, [activeEvent]);
+
   return (
-    <div className="hud-panel supervision-tree">
+    <div className={`hud-panel supervision-tree ${activeEvent === 'SPLIT' ? 'split-screen-effect' : ''}`}>
       <div className="panel-header">
         <span className="bracket">[</span>
         BEAM :: SUPERVISION_TREE
         <span className="bracket">]</span>
       </div>
+      
+      {activeEvent === 'SPLIT' && <div className="split-crack"></div>}
       
       <div className="tree-visual">
         <AnimatePresence>
@@ -89,15 +136,11 @@ const SupervisionTree = ({ metrics, activeEvent }) => {
               <div className={`tree-node branch ${activeEvent === 'DDOS' ? 'flashing-white' : ''}`}>POOL_B</div>
               <div className={`tree-node branch ${activeEvent === 'KILL' ? 'flashing-orange' : ''}`}>POOL_C</div>
             </div>
-            {/* The SVG laser rays from supervisor to the pools */}
-            {activeEvent === 'KILL' && (
-              <div className="supervisor-laser-overlay"></div>
-            )}
+            {activeEvent === 'KILL' && <div className="supervisor-laser-overlay"></div>}
           </div>
         </div>
         
         <div className="worker-grid-container">
-          {/* Animated Message Packets Layer */}
           {rps > 100 && (
             <div className="message-particles-layer">
               {Array.from({ length: activeEvent === 'DDOS' ? 30 : 5 }).map((_, i) => (
@@ -110,21 +153,31 @@ const SupervisionTree = ({ metrics, activeEvent }) => {
             </div>
           )}
 
-          <div className="worker-grid">
-            {nodes.map((state, i) => (
-              <div key={i} className="worker-wrapper">
-                {state === 'failed' && <div className="explosion-vfx"></div>}
-                {state === 'idle' && activeEvent === 'KILL' && <div className="respawn-vfx"></div>}
-                <div className={`worker-dot ${state}`}></div>
-              </div>
-            ))}
+          <div className={`worker-grid ${activeEvent === 'PURGE' ? 'wiped' : ''}`}>
+            {nodes.map((state, i) => {
+              const isUpgraded = upgradedNodes.includes(i);
+              const isSplitDisconnected = activeEvent === 'SPLIT' && i % 2 === 0;
+              
+              let finalState = state;
+              if (isSplitDisconnected && state !== 'empty') finalState = 'disconnected';
+              else if (isUpgraded && state !== 'empty') finalState = 'upgraded';
+
+              return (
+                <div key={i} className="worker-wrapper">
+                  {state === 'failed' && <div className="explosion-vfx"></div>}
+                  {state === 'idle' && activeEvent === 'KILL' && <div className="respawn-vfx"></div>}
+                  <div className={`worker-dot ${finalState}`}></div>
+                </div>
+              );
+            })}
           </div>
         </div>
         
         <div className="tree-footer">
           <div className="legend-item"><span className="worker-dot idle"></span> IDLE</div>
           <div className="legend-item"><span className="worker-dot processing"></span> MSG_PROC</div>
-          <div className="legend-item"><span className="worker-dot failed"></span> KERNEL_PANIC</div>
+          <div className="legend-item"><span className="worker-dot upgraded"></span> v2.0</div>
+          <div className="legend-item"><span className="worker-dot disconnected"></span> NET_DOWN</div>
         </div>
       </div>
     </div>

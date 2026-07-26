@@ -1,8 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const SystemControls = ({ metrics, spawnWorkers, simulateSpike, killRandom }) => {
-  const { stats, rps } = metrics;
+const SystemControls = ({ 
+  metrics, spawnWorkers, simulateSpike, killRandom, 
+  purgeCluster, hotUpgrade, netSplit, isAutoScaler, toggleAutoScaler 
+}) => {
+  const { stats } = metrics;
   
   const total = stats.total || 1;
   const loadA = Math.min(100, (stats.processing / total) * 100 + Math.random() * 5);
@@ -56,10 +59,7 @@ const SystemControls = ({ metrics, spawnWorkers, simulateSpike, killRandom }) =>
         </div>
       </div>
 
-      <div className="control-grid">
-        <button className="hud-btn" onClick={() => spawnWorkers(1000)}>
-          <span className="btn-decor">[+]</span> BOOTSTRAP 1K
-        </button>
+      <div className="control-grid scrollable-controls">
         <button className="hud-btn" onClick={() => spawnWorkers(5000)}>
           <span className="btn-decor">[+]</span> BOOTSTRAP 5K
         </button>
@@ -69,15 +69,32 @@ const SystemControls = ({ metrics, spawnWorkers, simulateSpike, killRandom }) =>
         <button className="hud-btn danger" onClick={() => killRandom(1000)}>
           <span className="btn-decor">[X]</span> SIGKILL 1K
         </button>
+        
+        {/* New V7 Controls */}
+        <div className="control-divider">--- ADVANCED OPS ---</div>
+        
+        <button className={`hud-btn toggle-btn ${isAutoScaler ? 'active' : ''}`} onClick={toggleAutoScaler}>
+          <span className="btn-decor">[*]</span> AUTO_SCALER: {isAutoScaler ? 'ON' : 'OFF'}
+        </button>
+        
+        <button className="hud-btn upgrade-btn" onClick={hotUpgrade}>
+          <span className="btn-decor">[^]</span> HOT CODE UPGRADE
+        </button>
+        
+        <button className="hud-btn split-btn" onClick={netSplit}>
+          <span className="btn-decor">[~]</span> SIMULATE NET-SPLIT
+        </button>
+
+        <button className="hud-btn nuke-btn" onClick={purgeCluster}>
+          <span className="btn-decor">[!]</span> SYSTEM PURGE
+        </button>
       </div>
       
       <div className="info-box">
         <div className="crosshair tr"></div>
         <div className="crosshair bl"></div>
-        <p className="info-title">BEAM ACTOR MODEL:</p>
-        <p>1. Memory is fully isolated per process.</p>
-        <p>2. "Let it crash" philosophy.</p>
-        <p>3. Supervisor restarts failed nodes.</p>
+        <p className="info-title">V7 ARCHITECTURE LAB:</p>
+        <p>Simulation of Elixir's massive concurrency, hot code swapping, and partition tolerance.</p>
       </div>
     </div>
   );

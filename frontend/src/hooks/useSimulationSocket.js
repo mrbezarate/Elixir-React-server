@@ -2,87 +2,85 @@ import { useState, useEffect, useCallback } from 'react';
 import { Socket } from 'phoenix';
 
 export const useSimulationSocket = () => {
-  const [socket, setSocket] = useState(null);
-  const [channel, setChannel] = useState(null);
   const [metrics, setMetrics] = useState({
-    stats: { idle: 0, processing: 0, success: 0, error: 0, total: 0 },
-    rps: 0,
-    timestamp: Date.now()
+    stats: { total: 0, processing: 0, idle: 0, error: 0 },
+    rps: 0
   });
   
-  // Keep a history of RPS for the graph
-  const [rpsHistory, setRpsHistory] = useState([]);
+  const [rpsHistory, setRpsHistory] = useState(Array(20).fill(0));
   const [logs, setLogs] = useState([]);
-
-  const addLog = useCallback((message) => {
-    setLogs(prev => {
-      const newLogs = [...prev, { time: new Date().toLocaleTimeString(), message }];
-      if (newLogs.length > 50) newLogs.shift();
-      return newLogs;
-    });
-  }, []);
+  const [channel, setChannel] = useState(null);
 
   useEffect(() => {
-    const phxSocket = new Socket('ws://localhost:4000/socket');
-    phxSocket.connect();
+    // Connect to Phoenix Socket
+    const socket = new Socket("ws://localhost:4000/socket");
+    socket.connect();
 
-    const phxChannel = phxSocket.channel('simulation', {});
-
-    phxChannel.join()
-      .receive('ok', (resp) => {
-        addLog(`System Connected. Active Workers: ${resp.active_workers}`);
+    const channel = socket.channel("simulation:lobby", {});
+    
+    channel.join()
+      .receive("ok", resp => {
+        console.log("Joined successfully", resp);
+        addLog("SYSTEM ONLINE: Connected to Elixir BEAM Node.");
+      })
+      .receive("error", resp => {
+        console.log("Unable to join", resp);
+        addLog("CRITICAL: Failed to connect to cluster.", "error");
       });
 
-    phxChannel.on('metrics_update', (payload) => {
-      setMetrics(payload);
-      
-      setRpsHistory(prev => {
-        const newHistory = [...prev, payload.rps];
-        if (newHistory.length > 30) newHistory.shift();
-        return newHistory;
+    // Listen for metrics updates
+    channel.on("metrics_update", payload => {
+      setMetrics(prev => {
+        if (prev.rps !== payload.rps) {
+          setRpsHistory(history => {
+            const newHistory = [...history, payload.rps];
+            if (newHistory.length > 20) newHistory.shift();
+            return newHistory;
+          });
+        }
+        return payload;
       });
-      
-      if (payload.stats.error > 0 && Math.random() > 0.8) {
-         addLog(`[WARN] Cluster node errors detected: ${payload.stats.error}`);
-      }
     });
 
-    setSocket(phxSocket);
-    setChannel(phxChannel);
+    setChannel(channel);
 
     return () => {
-      phxChannel.leave();
-      phxSocket.disconnect();
+      channel.leave();
+      socket.disconnect();
     };
-  }, [addLog]);
+  }, []);
+
+  const addLog = (msg, type = "info") => {
+    setLogs(prev => [...prev, { id: Date.now(), msg, type }]);
+  };
 
   const spawnWorkers = useCallback((count) => {
     if (channel) {
-      channel.push('spawn_workers', { count });
-      addLog(`[CMD] Spawning ${count} new worker nodes...`);
+      channel.push("spawn_workers", { count });
+      addLog(`[CMD] Bootstrapping ${count} isolated processes.`);
     }
-  }, [channel, addLog]);
+  }, [channel]);
 
   const simulateSpike = useCallback(() => {
     if (channel) {
-      channel.push('simulate_spike', {});
-      addLog(`[CMD] Simulating massive load spike across cluster...`);
+      channel.push("simulate_spike", {});
+      addLog(`[WARN] Network traffic spike detected. Initiating load balancing.`);
     }
-  }, [channel, addLog]);
+  }, [channel]);
 
   const killRandom = useCallback((count) => {
     if (channel) {
-      channel.push('kill_random', { count });
-      addLog(`[CRITICAL] Chaos Monkey: Killed ${count} nodes.`);
+      channel.push("kill_random", { count });
+      addLog(`[CRITICAL] Kernel Panic in ${count} nodes.`);
     }
-  }, [channel, addLog]);
+  }, [channel]);
+  
+  const purgeCluster = useCallback(() => {
+    if (channel) {
+      channel.push("purge_cluster", {});
+      addLog(`[FATAL] SYSTEM PURGE INITIATED. Destroying all processes.`);
+    }
+  }, [channel]);
 
-  return {
-    metrics,
-    rpsHistory,
-    logs,
-    spawnWorkers,
-    simulateSpike,
-    killRandom
-  };
+  return { metrics, rpsHistory, logs, spawnWorkers, simulateSpike, killRandom, purgeCluster };
 };
