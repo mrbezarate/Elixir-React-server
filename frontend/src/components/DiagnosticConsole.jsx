@@ -19,18 +19,18 @@ const DiagnosticConsole = ({ logs, errorCount }) => {
     let techMessage = '';
     let type = 'info';
 
-    if (lastLog.message.includes('[CRITICAL]')) {
+    if (lastLog.msg.includes('[CRITICAL]') || lastLog.msg.includes('[FATAL]')) {
       type = 'critical';
       techMessage = `[FAULT_TOLERANCE] SEVERE FAULT DETECTED: Kernel panic in Node Pool. Supervisor activating 'Let It Crash' protocol. Isolating memory fault...`;
-    } else if (lastLog.message.includes('[WARN]')) {
+    } else if (lastLog.msg.includes('[WARN]')) {
       type = 'warn';
       techMessage = `[SUPERVISOR] Detected process crashes. Restarting via one_for_one policy...`;
-    } else if (lastLog.message.includes('[CMD]')) {
+    } else if (lastLog.msg.includes('[CMD]')) {
       type = 'cmd';
       techMessage = `[ACTOR_MODEL] Spawning lightweight isolated processes in Erlang VM. No shared memory locking required.`;
     } else {
       type = 'sys';
-      techMessage = `[SYS] ${lastLog.message}`;
+      techMessage = `[SYS] ${lastLog.msg}`;
     }
 
     const newLog = {
