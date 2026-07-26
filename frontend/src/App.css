@@ -42,19 +42,21 @@ body {
   position: fixed;
   inset: 0;
   z-index: -1;
+  background-color: transparent;
+  /* Topographic rings */
   background-image: 
-    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-.hud-grid-bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: 
-    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-  background-size: 10px 10px;
+    repeating-radial-gradient(circle at 10% 20%, transparent 0, #ffffff 1px, transparent 2px, transparent 45px),
+    repeating-radial-gradient(circle at 90% 80%, transparent 0, #ffffff 1px, transparent 2px, transparent 65px),
+    repeating-radial-gradient(circle at 50% 120%, transparent 0, #ffffff 1px, transparent 2px, transparent 55px);
+  background-blend-mode: screen;
+  
+  /* Mask into dots */
+  -webkit-mask-image: radial-gradient(circle, black 1px, transparent 1.5px);
+  -webkit-mask-size: 6px 6px;
+  mask-image: radial-gradient(circle, black 1px, transparent 1.5px);
+  mask-size: 6px 6px;
+  
+  opacity: 0.25;
 }
 
 .v4-hud {
